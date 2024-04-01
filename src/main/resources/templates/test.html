@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- xmlns : xml에서 참고할 문서
+/ th="http://www.thymeleaf.org"를 적어주면
+ 타임리프 문법을 사용할 수 있고 타임리프 문법으로 해석함-->
+	<head>
+		<title>test</title>
+	</head>
+	<body>
+		<h2>test</h2>
+		<th:block th:each="data : ${datas}">
+            <!-- th:each = 타임리프에서의 for문 -->
+			[[${data}]]<br>
+            <!-- 텍스트로 표현할때는 [[ ]]로 묶어야 됨  -->
+		</th:block>
+	</body>
+</html>
