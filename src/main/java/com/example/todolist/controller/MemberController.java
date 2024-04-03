@@ -6,6 +6,8 @@ import com.example.todolist.common.ApiResponse;
 import com.example.todolist.dto.member.MemberRequestDTO;
 import com.example.todolist.dto.member.MemberResponseDTO;
 import com.example.todolist.service.member.MemberServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,57 +30,78 @@ public class MemberController {
 
     //1.회원가입
     @PostMapping("/join")
-    public ResponseEntity<?> join(@RequestBody MemberRequestDTO.MemberJoinDTO memberJoinDTO){
+    public ResponseEntity<?> join(@RequestBody MemberRequestDTO.MemberJoinDTO memberJoinDTO) {
         log.info("[MemberController] join");
         MemberResponseDTO.MemberJoinDTO result = memberService.join(memberJoinDTO);
         return ResponseEntity.ok().body(ApiResponse.SUCCESS(HttpStatus.CREATED.value(), "member join success", result));
     }
+
     //2.로그인
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody MemberRequestDTO memberdto){
+    public ResponseEntity<?> login(@RequestBody MemberRequestDTO.MemberLoginDTO memberLoginDTO, HttpSession httpSession) {
+
         log.info("[MemberController] login");
-        return ResponseEntity.ok("login: " + memberdto.toString());
+        MemberResponseDTO.MemberLoginDTO result = memberService.login(memberLoginDTO);
+
+        httpSession.setAttribute("memberId", result.getId());
+
+        return ResponseEntity.ok().body(ApiResponse.SUCCESS(HttpStatus.CREATED.value(), "member login success", result));
     }
 
     //3.모든회원조회
-    @PostMapping("/findall")
-    public ResponseEntity<?> findall(@RequestBody MemberRequestDTO memberdto){
-        log.info("[MemberController] findall");
-        return ResponseEntity.ok("findall: " + memberdto.toString());
+    @GetMapping("/findAll")
+    public ResponseEntity<?> findAll() {
+        log.info("[MemberController] findAll");
+        MemberResponseDTO.MemberFindAllDTO result = memberService.findAll();
+        return ResponseEntity.ok().body(ApiResponse.SUCCESS(HttpStatus.CREATED.value(), "member findAll success", result));
     }
 
+
     //4.특정회원조회
-    @PostMapping("/findone")
-    public ResponseEntity<?> findone(@RequestBody MemberRequestDTO memberdto){
-        log.info("[MemberController] findone");
-        return ResponseEntity.ok("findone: " + memberdto.toString());
+    @GetMapping("/findOne")
+    public ResponseEntity<?> findOne(HttpSession httpSession) {
+
+        log.info("[MemberController] findOne");
+        Long memberId = (Long) httpSession.getAttribute("memberId");
+        MemberResponseDTO.MemberFindOneDTO result = memberService.findOne(memberId);
+
+        return ResponseEntity.ok().body(ApiResponse.SUCCESS(HttpStatus.CREATED.value(), "member findOne success", result));
     }
 
     //5.정보 수정
     @PostMapping("/update")
-    public ResponseEntity<?> update(@RequestBody MemberRequestDTO memberdto){
+    public ResponseEntity<?> update(@RequestBody MemberRequestDTO.MemberUpdateDTO memberUpdateDTO, HttpSession httpSession) {
         log.info("[MemberController] update");
-        return ResponseEntity.ok("update: " + memberdto.toString());
+        Long memberId = (Long) httpSession.getAttribute("memberId");
+        MemberResponseDTO.MemberUpdateDTO result = memberService.update(memberId, memberUpdateDTO);
+        return ResponseEntity.ok().body(ApiResponse.SUCCESS(HttpStatus.CREATED.value(), "member update success", result));
     }
 
     //6.로그아웃
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestBody MemberRequestDTO memberdto){
+    public ResponseEntity<?> logout(HttpSession httpSession, HttpServletRequest request) {
+
         log.info("[MemberController] logout");
-        return ResponseEntity.ok("logout: " + memberdto.toString());
+        MemberResponseDTO.MemberLogoutDTO result = memberService.logout(request, (Long) httpSession.getAttribute("memberId"));
+
+        return ResponseEntity.ok().body(ApiResponse.SUCCESS(HttpStatus.CREATED.value(), "member logout success", result));
     }
 
     //7.회원 탈퇴
     @PostMapping("/delete")
-    public ResponseEntity<?> delete(@RequestBody MemberRequestDTO memberdto){
+    public ResponseEntity<?> delete(HttpSession httpSession) {
+
         log.info("[MemberController] delete");
-        return ResponseEntity.ok("delete: " + memberdto.toString());
+        String result = memberService.delete((Long) httpSession.getAttribute("memberId"));
+        return ResponseEntity.ok().body(ApiResponse.SUCCESS(HttpStatus.CREATED.value(), "member delete success", result));
     }
 
-
-
-
-
-
 }
+
+
+
+
+
+
+

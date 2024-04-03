@@ -1,5 +1,6 @@
 package com.example.todolist.entity.member;
 
+import com.example.todolist.dto.member.MemberRequestDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +22,12 @@ public class MemberEntity {
     private String memberName; // 이름
     private String memberPhone; // 전화번호
 
+    public void memberUpdate(MemberRequestDTO.MemberUpdateDTO memberUpdateDTO) {
+        this.memberEmail = memberUpdateDTO.getMemberEmail();
+        this.memberPassword = memberUpdateDTO.getMemberPassword();
+        this.memberName = memberUpdateDTO.getMemberName();
+        this.memberPhone = memberUpdateDTO.getMemberPhone();
+    }
 
     /** 생성자 **/
 
