@@ -59,7 +59,9 @@ public class TodoController {
     @GetMapping("/findAll")
     public ResponseEntity<?> findAll(HttpSession httpSession) {
         log.info("[TodoController] findAll");
+        //현재 멤버아이디 받기
         Long memberId = (Long) httpSession.getAttribute("memberId");
+        //service에서 모든 투두값 받아와서 리스트에 넣기
         List<TodoResponseDTO.TodoFindAllDTO> result = todoService.findAll(memberId);
         return ResponseEntity.ok().body(ApiResponse.SUCCESS(HttpStatus.OK.value(), "Todo findAll success", result));
     }

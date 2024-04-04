@@ -90,14 +90,20 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public List<TodoResponseDTO.TodoFindAllDTO> findAll(Long memberId) {
         log.info("[TodoServiceImpl] findAll");
+        //회원 id 기준 엔티티리스트에 디비에서 받아오기
         List<TodoEntity> todoEntityList = todoRepository.findByMemberEntityId(memberId);
+        //반환 할 디티오리스트 생성
         List<TodoResponseDTO.TodoFindAllDTO> todoResponseDTOList = new ArrayList<>();
 
+
         for (TodoEntity todoEntity : todoEntityList) {
-            // TodoEntity를 TodoFindOneDTO로 매핑
+            // TodoEntity를 TodoFindOneDTO(단일조회용)으로 매핑
             TodoResponseDTO.TodoFindOneDTO todoFindOneDTO = new TodoResponseDTO.TodoFindOneDTO(todoEntity);
-            // TodoFindOneDTO를 TodoFindAllDTO에 추가
+            // 모든 할 일 조회디티오 생성
             TodoResponseDTO.TodoFindAllDTO todoFindAllDTO = new TodoResponseDTO.TodoFindAllDTO();
+            //리스트 초기화 (안하면 null)
+            todoFindAllDTO.setTodoList(new ArrayList<>());
+            //단일->모든 리스트로 넣기
             todoFindAllDTO.getTodoList().add(todoFindOneDTO);
             todoResponseDTOList.add(todoFindAllDTO);
         }
